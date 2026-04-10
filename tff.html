@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Transfer Berhasil</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="card">
+      <div class="logo">
+        <span class="wondr">wondr</span>
+        <span class="by">by BNI</span>
+      </div>
+
+      <h2 class="success">Transfer berhasil</h2>
+      <h1 class="amount">Rp2.500.000</h1>
+
+      <p class="date">10 Apr 2026 · 15:30:26 WIB</p>
+      <p class="ref">Ref ID: 20260410123931029671</p>
+
+      <div class="section">
+        <h3>Penerima</h3>
+        <p class="bold">DANIES WAHYU FIRMANSYAH</p>
+        <p>KB BUKOPIN · 20000066710</p>
+      </div>
+
+      <div class="section">
+        <h3>Sumber dana</h3>
+        <p class="bold">IMAM NURAINUN MASYHUR</p>
+        <p>*******629</p>
+      </div>
+
+      <div class="section">
+        <h3>Detail transfer</h3>
+
+        <div class="row">
+          <span>Nominal</span>
+          <span>Rp2.500.000</span>
+        </div>
+        <div class="row">
+          <span>Biaya transaksi</span>
+          <span>Rp2.500</span>
+        </div>
+        <div class="row">
+          <span>Metode transfer</span>
+          <span>BI-FAST</span>
+        </div>
+        <div class="row">
+          <span>BIZ ID</span>
+          <span class="small">20260410BNINIDJA01000241022024</span>
+        </div>
+        <div class="row">
+          <span>Tujuan transaksi</span>
+          <span>Lainnya</span>
+        </div>
+      </div>
+
+      <div class="total">
+        <span>Total</span>
+        <span class="total-amount">Rp2.500.000</span>
+      </div>
+    </div>
+  </body>
+</html>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  body {
+    background: #eaeaea;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  /* Card */
+  .card {
+    width: 360px;
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Logo */
+  .logo {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .wondr {
+    font-size: 38px;
+    font-weight: bold;
+    color: #ff7a00;
+  }
+  .by {
+    font-size: 14px;
+    color: #777;
+    margin-left: 5px;
+  }
+
+  /* Header */
+  .success {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 22px;
+  }
+  .amount {
+    text-align: center;
+    font-size: 38px;
+    margin: 8px 0;
+  }
+  .date,
+  .ref {
+    text-align: center;
+    color: #666;
+    font-size: 13px;
+  }
+
+  /* Section */
+  .section {
+    margin-top: 22px;
+  }
+  .section h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+    border-top: 1px dashed #ddd;
+    padding-top: 12px;
+  }
+  .bold {
+    font-weight: bold;
+  }
+
+  /* ROW FIX UTAMA */
+  .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 8px 0;
+  }
+
+  .row span:first-child {
+    white-space: nowrap;
+  }
+
+  /* ⭐ SOLUSI TEKS PANJANG */
+  .row span:last-child {
+    text-align: right;
+    max-width: 180px;
+    overflow-wrap: break-word;
+    word-break: break-all;
+  }
+
+  /* khusus BIZ ID */
+  .long-text {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  /* Total */
+  .total {
+    margin-top: 25px;
+    border-top: 1px dashed #ccc;
+    padding-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .total-amount {
+    font-size: 30px;
+    font-weight: bold;
+  }
+</style>
