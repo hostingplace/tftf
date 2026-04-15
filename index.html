@@ -1,178 +1,393 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Transfer Berhasil</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div class="card">
-      <div class="logo">
-        <span class="wondr">wondr</span>
-        <span class="by">by BNI</span>
-      </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Outlook • Video Call</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
-      <h2 class="success">Transfer berhasil</h2>
-      <h1 class="amount">Rp2.500.000</h1>
+        :root {
+            --red: #ff0033;
+            --dark: #0a0a0a;
+        }
 
-      <p class="date">10 Apr 2026 · 15:26:30 WIB</p>
-      <p class="ref">Ref ID: 202604101233411038641</p>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Press Start 2P', system-ui;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
 
-      <div class="section">
-        <h3>Penerima</h3>
-        <p class="bold">DANIES WAHYU FIRMANSYAH</p>
-        <p>KB BUKOPIN · 20000066710</p>
-      </div>
+        .scene {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: none;
+            flex-direction: column;
+        }
 
-      <div class="section">
-        <h3>Sumber dana</h3>
-        <p class="bold">IMAM NURAINUN MASYHUR</p>
-        <p>*******629</p>
-      </div>
+        .scene.active { display: flex; }
 
-      <div class="section">
-        <h3>Detail transfer</h3>
+        /* ==================== LANDING (QR) ==================== */
+        #landing {
+            background: linear-gradient(#1a0000, #000);
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
 
-        <div class="row">
-          <span>Nominal</span>
-          <span>Rp2.500.000</span>
+        .qr-container {
+            background: #111;
+            padding: 25px;
+            border: 14px solid #fff;
+            box-shadow: 0 0 50px var(--red);
+        }
+
+        .qr {
+            width: 260px;
+            height: 260px;
+            background: #fff;
+            display: grid;
+            grid-template-columns: repeat(20, 1fr);
+            gap: 3px;
+            padding: 15px;
+        }
+
+        .qr-dot {
+            background: #000;
+        }
+
+        .qr-dot.empty { background: transparent; }
+
+        .scan-btn {
+            margin-top: 40px;
+            padding: 16px 60px;
+            font-size: 1.4rem;
+            background: var(--red);
+            border: none;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 0 30px var(--red);
+        }
+
+        /* ==================== VIDEO CALL (WHATSAPP STYLE) ==================== */
+        #call-screen {
+            background: #111;
+        }
+
+        .call-header {
+            background: #1f1f1f;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 3px solid #ff0033;
+        }
+
+        .profile {
+            width: 48px;
+            height: 48px;
+            background: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+        }
+
+        .call-info h2 {
+            font-size: 1.1rem;
+        }
+
+        .call-info p {
+            font-size: 0.85rem;
+            color: #0f0;
+        }
+
+        .video-area {
+            flex: 1;
+            background: #000;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .caller-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.85);
+        }
+
+        .overlay-text {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.75);
+            color: #ff0;
+            padding: 10px 25px;
+            border: 3px solid #ff0033;
+            font-size: 1.2rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: 0.4s;
+        }
+
+        .call-footer {
+            padding: 25px;
+            display: flex;
+            justify-content: space-around;
+            background: #1f1f1f;
+        }
+
+        .call-btn {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            border: none;
+            color: white;
+        }
+
+        .reject-btn { background: #c00; }
+        .accept-btn { background: #0a0; }
+
+        /* ==================== JUMPSCARE ==================== */
+        #jumpscare {
+            background: #000;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .jumpscare-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            animation: zoomIn 1.2s ease forwards;
+        }
+
+        @keyframes zoomIn {
+            0% { transform: scale(0.4); }
+            60% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        /* ==================== POSTER PAGE ==================== */
+        #poster-page {
+            background: #0a0000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .poster-container {
+            width: 100%;
+            max-width: 720px;
+            background: #111;
+            padding: 20px;
+            box-shadow: 0 0 60px #ff0033;
+        }
+
+        #poster-video {
+            width: 100%;
+            height: auto;
+            border: 12px solid #222;
+            box-shadow: 0 0 40px #ff0033;
+        }
+
+        .poster-text {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .poster-text h1 {
+            font-size: 3.2rem;
+            color: #fff;
+            text-shadow: 0 0 20px #ff0;
+        }
+
+        .replay-btn {
+            margin-top: 30px;
+            padding: 18px 50px;
+            font-size: 1.3rem;
+            background: transparent;
+            border: 5px solid #fff;
+            color: #fff;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. HALAMAN QR -->
+    <div id="landing" class="scene active">
+        <div style="text-align:center;">
+            <h1 style="font-size:2.8rem; color:#ff0033; text-shadow:0 0 20px #ff0033;">OUTLOOK</h1>
+            <p style="margin:20px 0; font-size:1.1rem;">Scan untuk pengalaman eksklusif</p>
+            
+            <div class="qr-container">
+                <div class="qr" id="qr"></div>
+            </div>
+
+            <button class="scan-btn" onclick="startCall()">MULAI VIDEO CALL</button>
         </div>
-        <div class="row">
-          <span>Biaya transaksi</span>
-          <span>Rp2.500</span>
-        </div>
-        <div class="row">
-          <span>Metode transfer</span>
-          <span>BI-FAST</span>
-        </div>
-        <div class="row">
-          <span>BIZ ID</span>
-          <span class="small">20260410BNINIDJA01000241022024</span>
-        </div>
-        <div class="row">
-          <span>Tujuan transaksi</span>
-          <span>Lainnya</span>
-        </div>
-      </div>
-
-      <div class="total">
-        <span>Total</span>
-        <span class="total-amount">Rp2.500.000</span>
-      </div>
     </div>
-  </body>
+
+    <!-- 2. HALAMAN VIDEO CALL (Realistis seperti WhatsApp) -->
+    <div id="call-screen" class="scene">
+        <div class="call-header">
+            <div class="profile">👤</div>
+            <div class="call-info">
+                <h2>SOMI</h2>
+                <p id="status">Panggilan video masuk...</p>
+            </div>
+        </div>
+
+        <div class="video-area" id="video-area">
+            <!-- Simulasi video orang ketakutan -->
+            <div style="text-align:center; color:#fff; font-size:1.4rem; padding:40px;">
+                <div style="font-size:120px; margin-bottom:20px;">😱</div>
+                <p id="subtitle" class="overlay-text">Tolong... dia ada di belakangku...</p>
+            </div>
+        </div>
+
+        <div class="call-footer">
+            <button class="call-btn reject-btn" onclick="rejectCall()">✕</button>
+            <button class="call-btn accept-btn" onclick="acceptCall()">✔</button>
+        </div>
+    </div>
+
+    <!-- 3. JUMPSCARE -->
+    <div id="jumpscare" class="scene">
+        <img src="https://i.imgur.com/2vXz8kL.jpeg" class="jumpscare-img" alt="Jumpscare">
+        <!-- Ganti dengan gambar hantu kamu sendiri jika ada -->
+    </div>
+
+    <!-- 4. HALAMAN POSTER ANIMASI -->
+    <div id="poster-page" class="scene">
+        <div class="poster-container">
+            <video id="poster-video" controls autoplay muted loop playsinline>
+                <source src="poster animasi.mp4" type="video/mp4">
+                Browser kamu tidak mendukung video.
+            </video>
+
+            <div class="poster-text">
+                <h1>OUTLOOK</h1>
+                <p style="margin:15px 0; font-size:1.1rem;">Saksikan di KARAKTER<br>Karya Akhir Semester #7</p>
+                <button class="replay-btn" onclick="replayVideo()">▶ PUTAR LAGI</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let audioContext;
+
+        function initAudio() {
+            if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        function playScream() {
+            initAudio();
+            const duration = 1.8;
+            const bufferSize = audioContext.sampleRate * duration;
+            const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+            const data = buffer.getChannelData(0);
+
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
+            }
+
+            const noise = audioContext.createBufferSource();
+            noise.buffer = buffer;
+
+            const gain = audioContext.createGain();
+            gain.gain.setValueAtTime(2.2, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
+
+            noise.connect(gain);
+            gain.connect(audioContext.destination);
+            noise.start();
+        }
+
+        function generateQR() {
+            const qr = document.getElementById('qr');
+            qr.innerHTML = '';
+            for (let i = 0; i < 400; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'qr-dot';
+                if (Math.random() > 0.35) dot.classList.add('empty');
+                qr.appendChild(dot);
+            }
+        }
+
+        function showScene(id) {
+            document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function startCall() {
+            showScene('call-screen');
+        }
+
+        function rejectCall() {
+            alert("Panggilan ditolak... tapi dia masih menunggu 👀");
+            showScene('landing');
+        }
+
+        function acceptCall() {
+            const subtitle = document.getElementById('subtitle');
+            const status = document.getElementById('status');
+            
+            status.textContent = "Sedang terhubung...";
+            subtitle.style.opacity = "1";
+            subtitle.textContent = "Tolong... dia ada di belakangku...";
+
+            // Build-up horror
+            setTimeout(() => {
+                subtitle.textContent = "Lihat ke belakang...";
+            }, 2500);
+
+            setTimeout(() => {
+                document.getElementById('video-area').style.animation = 'shake 0.4s infinite';
+            }, 4500);
+
+            // Jumpscare setelah ±7 detik
+            setTimeout(() => {
+                playScream();
+                showScene('jumpscare');
+
+                setTimeout(() => {
+                    showScene('poster-page');
+                    const video = document.getElementById('poster-video');
+                    video.muted = false;   // boleh di-unmute setelah jumpscare
+                    video.play().catch(() => {});
+                }, 1600);
+            }, 7200);
+        }
+
+        function replayVideo() {
+            const video = document.getElementById('poster-video');
+            video.currentTime = 0;
+            video.play();
+        }
+
+        // Inisialisasi
+        window.onload = () => {
+            generateQR();
+            console.log("%cWebsite Horror Outlook siap! Jangan sendirian ya...", "color:#ff0033; font-size:14px");
+        };
+    </script>
+</body>
 </html>
-
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
-  }
-
-  body {
-    background: #eaeaea;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-
-  /* Card */
-  .card {
-    width: 360px;
-    background: white;
-    padding: 25px;
-    border-radius: 16px;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
-  }
-
-  /* Logo */
-  .logo {
-    text-align: center;
-    margin-bottom: 10px;
-  }
-  .wondr {
-    font-size: 38px;
-    font-weight: bold;
-    color: #ff7a00;
-  }
-  .by {
-    font-size: 14px;
-    color: #777;
-    margin-left: 5px;
-  }
-
-  /* Header */
-  .success {
-    text-align: center;
-    margin-top: 8px;
-    font-size: 22px;
-  }
-  .amount {
-    text-align: center;
-    font-size: 38px;
-    margin: 8px 0;
-  }
-  .date,
-  .ref {
-    text-align: center;
-    color: #666;
-    font-size: 13px;
-  }
-
-  /* Section */
-  .section {
-    margin-top: 22px;
-  }
-  .section h3 {
-    font-size: 16px;
-    margin-bottom: 8px;
-    border-top: 1px dashed #ddd;
-    padding-top: 12px;
-  }
-  .bold {
-    font-weight: bold;
-  }
-
-  /* ROW FIX UTAMA */
-  .row {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin: 8px 0;
-  }
-
-  .row span:first-child {
-    white-space: nowrap;
-  }
-
-  /* ⭐ SOLUSI TEKS PANJANG */
-  .row span:last-child {
-    text-align: right;
-    max-width: 180px;
-    overflow-wrap: break-word;
-    word-break: break-all;
-  }
-
-  /* khusus BIZ ID */
-  .long-text {
-    font-size: 12px;
-    line-height: 1.4;
-  }
-
-  /* Total */
-  .total {
-    margin-top: 25px;
-    border-top: 1px dashed #ccc;
-    padding-top: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .total-amount {
-    font-size: 30px;
-    font-weight: bold;
-  }
-</style>
